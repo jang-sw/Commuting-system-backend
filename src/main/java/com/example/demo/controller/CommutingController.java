@@ -53,7 +53,7 @@ public class CommutingController extends BaseController{
 	public ResponseEntity<ResponseDto> history(HttpServletRequest httpServletRequest, int page){
 		ResponseDto responseDto = new ResponseDto(1);
 		try {
-			List<CommutingDto.CommutingData> hist = commutingService.getCommutingHistory(page, httpServletRequest.getHeader("accountId"));
+			List<CommutingDto.CommutingData> hist = commutingService.getCommutingHistory(page - 1, httpServletRequest.getHeader("accountId"));
 			Long maxPage = commonUtil.getMaxPage(commutingService.getHistorySize(httpServletRequest.getHeader("accountId")), Constant.HISTORY_PAGE_SIZE);
 			responseDto.setData(new CommutingDto.History(hist, maxPage));
 		} catch (Exception e) {

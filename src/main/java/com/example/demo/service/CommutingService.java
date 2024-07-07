@@ -4,8 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.config.Constant;
 import com.example.demo.dto.CommutingDto;
 import com.example.demo.entity.CommutingEntity;
 import com.example.demo.repo.CommutingRepo;
@@ -38,6 +40,8 @@ public class CommutingService {
 		return commutingRepo.findTodayCommuting(Long.parseLong(accountId));
 	}
 	public List<CommutingDto.CommutingData> getCommutingHistory(int page, String accountId) throws Exception{
+		
+		
 		return commutingRepo.findByUserWithPage(page, Long.parseLong(accountId));
 	}
 	public Long getHistorySize(String accountId) throws Exception{

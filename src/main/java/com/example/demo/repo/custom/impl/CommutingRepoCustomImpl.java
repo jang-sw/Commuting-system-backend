@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.config.Constant;
@@ -85,11 +86,14 @@ public class CommutingRepoCustomImpl implements CommutingRepoCustom{
 		QCommutingEntity qCommutingEntity = QCommutingEntity.commutingEntity;
 		OrderSpecifier<?> orderSpecifier = new OrderSpecifier<>(Order.DESC, qCommutingEntity.commutingId);
 
+		PageRequest pageRequest = PageRequest.of(page, Constant.HISTORY_PAGE_SIZE);
+		System.out.println();
+		
 		return jpaQueryFactory.select(Projections.bean(CommutingDto.CommutingData.class, qCommutingEntity.commutingId ,qCommutingEntity.state, qCommutingEntity.start, qCommutingEntity.end))
 				.from(qCommutingEntity)
 				.where(qCommutingEntity.user.accountId.eq(accountId))
-		        .offset(page)
-		        .limit(Constant.HISTORY_PAGE_SIZE)
+		        .offset(pageRequest.getOffset())
+		        .limit(pageRequest.getPageSize())
 		        .orderBy(orderSpecifier)
 		        .fetch();
 	}
