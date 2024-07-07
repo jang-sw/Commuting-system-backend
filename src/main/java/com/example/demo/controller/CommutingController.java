@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.config.Constant;
+import com.example.demo.dto.CommutingDto;
 import com.example.demo.dto.ResponseDto;
 import com.example.demo.dto.UserDto;
+import com.example.demo.entity.CommutingEntity;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.service.CommutingService;
 import com.example.demo.service.UserService;
@@ -33,11 +36,11 @@ public class CommutingController extends BaseController{
 		}
 		return ResponseEntity.ok(responseDto);
 	}
+	
 	@GetMapping("/api/commute/todayByName")
 	public ResponseEntity<ResponseDto> todayByName(HttpServletRequest httpServletRequest, String name){
 		ResponseDto responseDto = new ResponseDto(1);
-		try {
-			System.out.println(name);
+		try { 
 			responseDto.setData(userService.getTodayCommutingByName(name));
 		} catch (Exception e) {
 			responseDto.setResult(-1);
@@ -45,20 +48,39 @@ public class CommutingController extends BaseController{
 		}
 		return ResponseEntity.ok(responseDto);
 	}
+	
+	@GetMapping("/api/commute/history")
+	public ResponseEntity<ResponseDto> history(HttpServletRequest httpServletRequest, int page){
+		ResponseDto responseDto = new ResponseDto(1);
+		try {
+			List<CommutingDto.CommutingData> hist = commutingService.getCommutingHistory(page, httpServletRequest.getHeader("accountId"));
+			Long maxPage = commonUtil.getMaxPage(commutingService.getHistorySize(httpServletRequest.getHeader("accountId")), Constant.HISTORY_PAGE_SIZE);
+			responseDto.setData(new CommutingDto.History(hist, maxPage));
+		} catch (Exception e) {
+			responseDto.setResult(-1);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(responseDto);
+	}
+	
 	@PostMapping("/api/commute/clockIn")
 	public ResponseEntity<ResponseDto> clockIn(HttpServletRequest httpServletRequest){
 		return ResponseEntity.ok(new ResponseDto(commutingService.clockIn(httpServletRequest.getHeader("accountId"))));
 	}
+	
 	@PostMapping("/api/commute/clockOut")
 	public ResponseEntity<ResponseDto> clockOut(HttpServletRequest httpServletRequest){
 		return ResponseEntity.ok(new ResponseDto(commutingService.clockOut(httpServletRequest.getHeader("accountId"))));
 	}
+	
 	@PostMapping("/api/commute/outing")
 	public ResponseEntity<ResponseDto> outing(HttpServletRequest httpServletRequest){
 		return ResponseEntity.ok(new ResponseDto(commutingService.updateState(httpServletRequest.getHeader("accountId"), "OUTING")));
 	}
+	
 	@PostMapping("/api/commute/restart")
 	public ResponseEntity<ResponseDto> restart(HttpServletRequest httpServletRequest){
 		return ResponseEntity.ok(new ResponseDto(commutingService.updateState(httpServletRequest.getHeader("accountId"), "START")));
 	}
+	
 }

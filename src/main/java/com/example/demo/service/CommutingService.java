@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ import jakarta.transaction.Transactional;
 public class CommutingService {
 
 	@Autowired CommutingRepo commutingRepo;
+	
+	
 	
 	public int clockIn(String accountId) {
 		try {
@@ -34,7 +37,12 @@ public class CommutingService {
 	public CommutingDto.TodayCommuting getTodayCommuting(String accountId) throws Exception{
 		return commutingRepo.findTodayCommuting(Long.parseLong(accountId));
 	}
-	
+	public List<CommutingDto.CommutingData> getCommutingHistory(int page, String accountId) throws Exception{
+		return commutingRepo.findByUserWithPage(page, Long.parseLong(accountId));
+	}
+	public Long getHistorySize(String accountId) throws Exception{
+		return commutingRepo.countByAccoundId(Long.parseLong(accountId));
+	}
 	@Transactional
 	public int clockOut(String accountId) {
 		try {
