@@ -42,4 +42,20 @@ public class UserDto {
 			this.rank = userEntity.getRank();
 		}
 	}
+	
+	@Data
+	public static class TodayCommute{
+		String email;
+		String auth;
+		String name;
+		String team;
+		String position;
+		String rank;
+		
+		//현재 근무 상태
+		String state;
+		//휴가 구분
+		String category;
+		
+	}
 }

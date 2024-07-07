@@ -9,7 +9,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.config.Constant;
+import com.example.demo.dto.CommutingDto;
 import com.example.demo.dto.UserDto;
+import com.example.demo.dto.UserDto.TodayCommute;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repo.UserRepo;
 import com.example.demo.util.CryptoUtil;
@@ -71,5 +73,9 @@ public class UserService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public List<TodayCommute> getTodayCommutingByName(String name) throws Exception{
+		return userRepo.findTodayCommuting(name);
 	}
 }

@@ -33,6 +33,18 @@ public class CommutingController extends BaseController{
 		}
 		return ResponseEntity.ok(responseDto);
 	}
+	@GetMapping("/api/commute/todayByName")
+	public ResponseEntity<ResponseDto> todayByName(HttpServletRequest httpServletRequest, String name){
+		ResponseDto responseDto = new ResponseDto(1);
+		try {
+			System.out.println(name);
+			responseDto.setData(userService.getTodayCommutingByName(name));
+		} catch (Exception e) {
+			responseDto.setResult(-1);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(responseDto);
+	}
 	@PostMapping("/api/commute/clockIn")
 	public ResponseEntity<ResponseDto> clockIn(HttpServletRequest httpServletRequest){
 		return ResponseEntity.ok(new ResponseDto(commutingService.clockIn(httpServletRequest.getHeader("accountId"))));
