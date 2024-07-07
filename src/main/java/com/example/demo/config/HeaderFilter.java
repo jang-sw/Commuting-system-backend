@@ -34,16 +34,16 @@ public class HeaderFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-
-        String userAgent = httpRequest.getHeader("User-Agent");
-
-        if (userAgent == null || !chkBrowser(userAgent)) {
-            httpResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-            httpResponse.getWriter().write("Bad Request");
-            return;
-        }
+//        HttpServletRequest httpRequest = (HttpServletRequest) request;
+//        HttpServletResponse httpResponse = (HttpServletResponse) response;
+//
+//        String userAgent = httpRequest.getHeader("User-Agent");
+//
+//        if (userAgent == null || !chkBrowser(userAgent)) {
+//            httpResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+//            httpResponse.getWriter().write("Bad Request");
+//            return;
+//        }
 
         chain.doFilter(request, response);
     }

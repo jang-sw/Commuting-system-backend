@@ -2,6 +2,9 @@ package com.example.demo.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -22,6 +25,8 @@ import lombok.Data;
 @Entity
 @Table(name = "tb_commuting")
 @Data
+@DynamicInsert
+@DynamicUpdate 
 public class CommutingEntity {
 
 	@Id

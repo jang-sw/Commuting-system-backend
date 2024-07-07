@@ -3,6 +3,10 @@ package com.example.demo.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import com.example.demo.dto.UserDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -18,10 +22,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tb_user")
 @Data
+@NoArgsConstructor
+@DynamicInsert
+@DynamicUpdate 
 public class UserEntity {
 
 	@Id
@@ -41,11 +49,17 @@ public class UserEntity {
 	@Column(name = "team")
 	String team;
   
-	@Column(name = "position")
+	@Column(name = "position") 
 	String position;
+	
+	@Column(name = "rank")
+	String rank;
 	
 	@Column(name = "del_yn")
 	String delYn;
+	
+	@Column(name = "auth")
+	String auth;
 	
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -64,4 +78,15 @@ public class UserEntity {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user") 
 	List<CommutingEntity> commutingList;
+	
+	public UserEntity(UserDto.CreateRequest user) {
+		this.email = user.getEmail();
+		this.pwd = user.getPwd();
+		this.name = user.getName();
+		this.team = user.getTeam();
+		this.position = user.getPosition();
+		this.rank = user.getRank();
+	}
+	
+	
 }
