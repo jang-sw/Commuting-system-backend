@@ -17,14 +17,5 @@ public class UserRepoCustomImpl implements UserRepoCustom{
 	
 	final JPAQueryFactory jpaQueryFactory;
 	
-	@Override
-	public List<UserEntity> findAllNotDeleted() {
-		QUserEntity qUserEntity = QUserEntity.userEntity;
-		
-		return jpaQueryFactory
-				.selectFrom(qUserEntity)
-				.where(qUserEntity.delYn.eq("N"))
-				.fetch();
-	}
-
+	
 }

@@ -21,12 +21,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tb_commuting")
 @Data
 @DynamicInsert
 @DynamicUpdate 
+@NoArgsConstructor
 public class CommutingEntity {
 
 	@Id
@@ -52,4 +54,26 @@ public class CommutingEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "account_id")
 	UserEntity user;
+	
+	public CommutingEntity (Long accountId, String state, LocalDateTime time) {
+		if(user == null)user = new UserEntity();
+		this.user.setAccountId(accountId);
+		this.state = state;
+		if(state.equals("START")) this.start = time;
+		else if(state.equals("END")) this.end = time;
+	}
+	public CommutingEntity (Long commutingId, Long accountId, String state, LocalDateTime time) {
+		if(user == null)user = new UserEntity();
+		this.user.setAccountId(accountId);
+		this.commutingId = commutingId;
+		this.state = state;
+		if(state.equals("START")) this.start = time;
+		else if(state.equals("END")) this.end = time;
+	}
+	public CommutingEntity (Long commutingId, Long accountId, String state) {
+		if(user == null)user = new UserEntity();
+		this.user.setAccountId(accountId);
+		this.state = state;
+		this.commutingId = commutingId;
+	}
 }

@@ -9,6 +9,5 @@ import com.example.demo.entity.UserEntity;
 
 @Repository
 public interface UserRepoCustom {
-	List<UserEntity> findAllNotDeleted();
 
 }
