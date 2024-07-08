@@ -36,6 +36,7 @@ public class CommutingRepoCustomImpl implements CommutingRepoCustom{
 		return jpaQueryFactory
 				.update(qCommutingEntity)
 				.set(qCommutingEntity.end, now)
+				.set(qCommutingEntity.state, "END")
 				.where( qCommutingEntity.user.accountId.eq(accountId)
 						,qCommutingEntity.start.isNotNull()
 						,qCommutingEntity.end.isNull()
