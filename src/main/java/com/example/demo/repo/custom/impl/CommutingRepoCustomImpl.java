@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.config.Constant;
 import com.example.demo.dto.CommutingDto;
-import com.example.demo.entity.CommutingEntity;
 import com.example.demo.entity.QCommutingEntity;
 import com.example.demo.repo.custom.CommutingRepoCustom;
 import com.querydsl.core.types.Order;
@@ -87,7 +86,6 @@ public class CommutingRepoCustomImpl implements CommutingRepoCustom{
 		OrderSpecifier<?> orderSpecifier = new OrderSpecifier<>(Order.DESC, qCommutingEntity.commutingId);
 
 		PageRequest pageRequest = PageRequest.of(page, Constant.HISTORY_PAGE_SIZE);
-		System.out.println();
 		
 		return jpaQueryFactory.select(Projections.bean(CommutingDto.CommutingData.class, qCommutingEntity.commutingId ,qCommutingEntity.state, qCommutingEntity.start, qCommutingEntity.end))
 				.from(qCommutingEntity)
@@ -99,7 +97,7 @@ public class CommutingRepoCustomImpl implements CommutingRepoCustom{
 	}
 
 	@Override
-	public Long countByAccoundId(Long accountId) {
+	public Long countByAccountId(Long accountId) {
 		QCommutingEntity qCommutingEntity = QCommutingEntity.commutingEntity;
 		return jpaQueryFactory.select(qCommutingEntity.count())
 			.from(qCommutingEntity)

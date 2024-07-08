@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,12 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.config.Constant;
 import com.example.demo.dto.CommutingDto;
 import com.example.demo.dto.ResponseDto;
-import com.example.demo.dto.UserDto;
-import com.example.demo.entity.CommutingEntity;
-import com.example.demo.entity.UserEntity;
-import com.example.demo.service.CommutingService;
-import com.example.demo.service.UserService;
-import com.example.demo.util.CryptoUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -53,8 +44,22 @@ public class CommutingController extends BaseController{
 	public ResponseEntity<ResponseDto> history(HttpServletRequest httpServletRequest, int page){
 		ResponseDto responseDto = new ResponseDto(1);
 		try {
-			List<CommutingDto.CommutingData> hist = commutingService.getCommutingHistory(page - 1, httpServletRequest.getHeader("accountId"));
-			Long maxPage = commonUtil.getMaxPage(commutingService.getHistorySize(httpServletRequest.getHeader("accountId")), Constant.HISTORY_PAGE_SIZE);
+			List<CommutingDto.CommutingData> hist = commutingService.getCommutingHistory(page - 1, Long.parseLong(httpServletRequest.getHeader("accountId")));
+			Long maxPage = commonUtil.getMaxPage(commutingService.getHistorySize(Long.parseLong(httpServletRequest.getHeader("accountId"))), Constant.HISTORY_PAGE_SIZE);
+			responseDto.setData(new CommutingDto.History(hist, maxPage));
+		} catch (Exception e) {
+			responseDto.setResult(-1);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(responseDto);
+	}
+	
+	@GetMapping("/adminApi/commute/history")
+	public ResponseEntity<ResponseDto> historyByUser(HttpServletRequest httpServletRequest, int page, Long accountId){
+		ResponseDto responseDto = new ResponseDto(1);
+		try {
+			List<CommutingDto.CommutingData> hist = commutingService.getCommutingHistory(page - 1, accountId);
+			Long maxPage = commonUtil.getMaxPage(commutingService.getHistorySize(accountId), Constant.HISTORY_PAGE_SIZE);
 			responseDto.setData(new CommutingDto.History(hist, maxPage));
 		} catch (Exception e) {
 			responseDto.setResult(-1);

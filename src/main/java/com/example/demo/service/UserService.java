@@ -9,9 +9,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.config.Constant;
-import com.example.demo.dto.CommutingDto;
 import com.example.demo.dto.UserDto;
-import com.example.demo.dto.UserDto.TodayCommute;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repo.UserRepo;
 import com.example.demo.util.CryptoUtil;
@@ -66,8 +64,12 @@ public class UserService {
 
 			String id = claims.getSubject();
 			String d = cryptoUtil.AESDecrypt((String) claims.get("d"));
+			
+			
 			if(id != null && accountId.equals(d.split("_")[1]) && ((new Date().getTime() - claims.getExpiration().getTime()) / (60000 * 1440)) <= 1) {
-	        	return cryptoUtil.getToken(UUID.randomUUID() + "_"+ accountId + "_" + sessionId);
+				UserDto.Response user = userRepo.findUserById(Long.parseLong(accountId));
+				if(user == null) return null;
+				return cryptoUtil.getToken(UUID.randomUUID() + "_"+ accountId + "_" + user.getAuth() + "_"+ sessionId);
 	        } 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -75,7 +77,13 @@ public class UserService {
 		return null;
 	}
 	
-	public List<TodayCommute> getTodayCommutingByName(String name) throws Exception{
+	public List<UserDto.TodayCommute> getTodayCommutingByName(String name) throws Exception{
 		return userRepo.findTodayCommuting(name);
+	}
+	public List<UserDto.Response> getUserList(String name) throws Exception{
+		return userRepo.findContainsName(name);
+	}
+	public UserDto.Response getUser(Long accountId){
+		return userRepo.findUserById(accountId);
 	}
 }

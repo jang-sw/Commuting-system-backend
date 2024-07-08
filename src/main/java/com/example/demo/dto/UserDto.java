@@ -3,6 +3,7 @@ package com.example.demo.dto;
 import com.example.demo.entity.UserEntity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 public class UserDto {
 
@@ -23,7 +24,8 @@ public class UserDto {
 	}
 	
 	@Data
-	public static class LoginResponse{
+	@NoArgsConstructor
+	public static class Response{
 		Long accountId;
 		String email;
 		String auth;
@@ -32,7 +34,7 @@ public class UserDto {
 		String position;
 		String rank;
 		
-		public LoginResponse (UserEntity userEntity) {
+		public Response (UserEntity userEntity) {
 			this.accountId = userEntity.getAccountId();
 			this.email = userEntity.getEmail();
 			this.auth = userEntity.getAuth();

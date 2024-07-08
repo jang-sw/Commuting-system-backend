@@ -48,12 +48,37 @@ public class UserRepoCustomImpl implements UserRepoCustom{
 		.leftJoin(qDayOffEntity).on(
 				qUserEntity.accountId.eq(qDayOffEntity.user.accountId)
 				,qDayOffEntity.start.isNotNull()
-				,qDayOffEntity.start.after(startOfDay)
-				,qDayOffEntity.start.before(startOfTomorrow)
+				,qDayOffEntity.start.eq(today)
 			)
 		.where(qUserEntity.name.contains(name.trim()))
 		.fetch();
 		
+	}
+
+	@Override
+	public List<UserDto.Response> findContainsName(String name) {
+		QUserEntity qUserEntity = QUserEntity.userEntity;
+		
+		return jpaQueryFactory.select(
+				Projections.bean(UserDto.Response.class
+					, qUserEntity.accountId, qUserEntity.email, qUserEntity.auth, qUserEntity.name, qUserEntity.team, qUserEntity.position, qUserEntity.rank
+				))
+			.from(qUserEntity)
+			.where(qUserEntity.name.contains(name.trim()))
+			.fetch();
+	}
+
+	@Override
+	public UserDto.Response findUserById(Long accountId) {
+		QUserEntity qUserEntity = QUserEntity.userEntity;
+		
+		return jpaQueryFactory.select(
+				Projections.bean(UserDto.Response.class
+					, qUserEntity.accountId, qUserEntity.email, qUserEntity.auth, qUserEntity.name, qUserEntity.team, qUserEntity.position, qUserEntity.rank
+				))
+			.from(qUserEntity)
+			.where(qUserEntity.accountId.eq(accountId))
+			.fetchFirst();
 	}
 	
 	

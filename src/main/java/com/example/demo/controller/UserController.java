@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +17,19 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestController
 public class UserController extends BaseController{
  
+	
+	@GetMapping("/adminApi/account/byName")
+	public ResponseEntity<ResponseDto> byName(HttpServletRequest httpServletRequest, String name){
+		ResponseDto responseDto = new ResponseDto(1);
+		try { 
+			responseDto.setData(userService.getUserList(name));
+		} catch (Exception e) {
+			responseDto.setResult(-1);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(responseDto);
+	}
+	
 	@PostMapping("/openApi/account/create")
 	public ResponseEntity<ResponseDto> createUser( UserDto.CreateRequest user){
 		return ResponseEntity.ok(new ResponseDto(userService.createUser(user)));
@@ -28,14 +40,14 @@ public class UserController extends BaseController{
 		ResponseDto responseDto = new ResponseDto();
 		UserEntity userEntity = userService.login(user);
 		String auth = userEntity != null ?
-				cryptoUtil.getToken(UUID.randomUUID() + "_"+ userEntity.getAccountId() + "_" + httpServletRequest.getRequestedSessionId()) : null;
+				cryptoUtil.getToken(UUID.randomUUID() + "_" + userEntity.getAccountId() + "_" + userEntity.getAuth() + "_" + httpServletRequest.getRequestedSessionId()) : null;
 		
 		if(StringUtils.isBlank(auth)) {
 			responseDto.setResult(-1);
 			return ResponseEntity.ok(responseDto);
 		}
 		responseDto.setResult(1);
-		responseDto.setData(new UserDto.LoginResponse(userEntity));
+		responseDto.setData(new UserDto.Response(userEntity));
 		return ResponseEntity.ok().header("Authorization", auth).body(responseDto);
 	}
 	
