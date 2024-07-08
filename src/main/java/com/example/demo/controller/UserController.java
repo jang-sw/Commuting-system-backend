@@ -29,7 +29,17 @@ public class UserController extends BaseController{
 		}
 		return ResponseEntity.ok(responseDto);
 	}
-	
+	@GetMapping("/api/account/chkUserInfo")
+	public ResponseEntity<ResponseDto> chkUserInfo(HttpServletRequest httpServletRequest, UserDto.ChkData user){
+		ResponseDto responseDto = new ResponseDto(1);
+		try { 
+			responseDto.setData(userService.chKUserData(Long.parseLong(httpServletRequest.getHeader("accountId")), user.getEmail(), user.getAuth(), user.getName()));
+		} catch (Exception e) {
+			responseDto.setResult(-1);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(responseDto);
+	}
 	@PostMapping("/openApi/account/create")
 	public ResponseEntity<ResponseDto> createUser( UserDto.CreateRequest user){
 		return ResponseEntity.ok(new ResponseDto(userService.createUser(user)));

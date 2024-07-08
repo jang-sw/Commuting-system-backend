@@ -86,4 +86,14 @@ public class UserService {
 	public UserDto.Response getUser(Long accountId){
 		return userRepo.findUserById(accountId);
 	}
+	public int chKUserData(Long accountId, String email, String auth, String name) {
+		try {
+			return userRepo.countByAccountIdAndEmailAndAuthAndNameAndDelYn(accountId, email, auth, name, "N") > 0 ? 1 : -1;
+		}catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+		
+	}
+	
 }

@@ -50,7 +50,7 @@ public class UserRepoCustomImpl implements UserRepoCustom{
 				,qDayOffEntity.start.isNotNull()
 				,qDayOffEntity.start.eq(today)
 			)
-		.where(qUserEntity.name.contains(name.trim()))
+		.where(qUserEntity.name.contains(name.trim()), qUserEntity.delYn.eq("N"))
 		.fetch();
 		
 	}
@@ -64,7 +64,7 @@ public class UserRepoCustomImpl implements UserRepoCustom{
 					, qUserEntity.accountId, qUserEntity.email, qUserEntity.auth, qUserEntity.name, qUserEntity.team, qUserEntity.position, qUserEntity.rank
 				))
 			.from(qUserEntity)
-			.where(qUserEntity.name.contains(name.trim()))
+			.where(qUserEntity.name.contains(name.trim()), qUserEntity.delYn.eq("N"))
 			.fetch();
 	}
 
@@ -77,7 +77,7 @@ public class UserRepoCustomImpl implements UserRepoCustom{
 					, qUserEntity.accountId, qUserEntity.email, qUserEntity.auth, qUserEntity.name, qUserEntity.team, qUserEntity.position, qUserEntity.rank
 				))
 			.from(qUserEntity)
-			.where(qUserEntity.accountId.eq(accountId))
+			.where(qUserEntity.accountId.eq(accountId), qUserEntity.delYn.eq("N"))
 			.fetchFirst();
 	}
 	

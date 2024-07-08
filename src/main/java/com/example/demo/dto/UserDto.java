@@ -24,6 +24,13 @@ public class UserDto {
 	}
 	
 	@Data
+	public static class ChkData{
+		String email;
+		String auth;
+		String name;
+	}
+	
+	@Data
 	@NoArgsConstructor
 	public static class Response{
 		Long accountId;
