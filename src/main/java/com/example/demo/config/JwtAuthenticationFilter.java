@@ -64,12 +64,14 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                     if (request.getRequestURI().startsWith("/adminApi")) {
                     	String auth = userService.getUser(Long.parseLong(accountId)).getAuth();
                     	if (!auth.equals("ADMIN")) {
-                            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+                    		response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized");
+                        	return;
                         }
                     }
                 }
-            } catch (Exception e) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token", e);
+            } catch (Exception e) { 
+            	response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized");
+            	return;
             }
         }
         chain.doFilter(request, response);

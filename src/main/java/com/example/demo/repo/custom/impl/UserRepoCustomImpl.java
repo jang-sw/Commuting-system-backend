@@ -42,8 +42,8 @@ public class UserRepoCustomImpl implements UserRepoCustom{
 		.leftJoin(qCommutingEntity).on(
 				qUserEntity.accountId.eq(qCommutingEntity.user.accountId)
 				,qCommutingEntity.start.isNotNull()
-				,qCommutingEntity.start.after(startOfDay)
-				,qCommutingEntity.start.before(startOfTomorrow)
+				,qCommutingEntity.start.goe(startOfDay)
+				,qCommutingEntity.start.loe(startOfTomorrow)
 			)
 		.leftJoin(qDayOffEntity).on(
 				qUserEntity.accountId.eq(qDayOffEntity.user.accountId)

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.config.Constant;
 import com.example.demo.dto.CommutingDto;
+import com.example.demo.dto.DayOffDto;
 import com.example.demo.dto.ResponseDto;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +21,10 @@ public class CommutingController extends BaseController{
 	public ResponseEntity<ResponseDto> today(HttpServletRequest httpServletRequest){
 		ResponseDto responseDto = new ResponseDto(1);
 		try {
-			responseDto.setData(commutingService.getTodayCommuting(httpServletRequest.getHeader("accountId")));
+			DayOffDto.DayOffData dayOff = dayOffService.getTodayDayOff(Long.parseLong(httpServletRequest.getHeader("accountId")));
+			CommutingDto.TodayCommuting commuting = commutingService.getTodayCommuting(httpServletRequest.getHeader("accountId"));
+			responseDto.setData(new CommutingDto.Today(commuting, dayOff));
+			
 		} catch (Exception e) {
 			responseDto.setResult(-1);
 			e.printStackTrace();

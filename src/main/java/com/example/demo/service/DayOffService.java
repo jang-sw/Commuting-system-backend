@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.config.Constant;
 import com.example.demo.dto.DayOffDto;
+import com.example.demo.dto.DayOffDto.DayOffData;
 import com.example.demo.entity.DayOffEntity;
 import com.example.demo.repo.DayOffRepo;
 import com.example.demo.util.CommonUtil;
@@ -24,9 +25,12 @@ public class DayOffService {
 			return -1;
 		}
 	}
-	
-	public DayOffDto.DayOffHistory getHistData(Long accountId, int page) throws Exception{
+	public DayOffDto.DayOffData getTodayDayOff(Long accountId) throws Exception{
 		
+		return dayOffRepo.finfTodayByAccountId(accountId);
+		
+	}
+	public DayOffDto.DayOffHistory getHistData(Long accountId, int page) throws Exception{
 		DayOffDto.DayOffHistory dayOffHistory 
 			= new DayOffDto.DayOffHistory(
 					dayOffRepo.findUsedByMonth(accountId)

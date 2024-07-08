@@ -39,8 +39,8 @@ public class CommutingRepoCustomImpl implements CommutingRepoCustom{
 				.where( qCommutingEntity.user.accountId.eq(accountId)
 						,qCommutingEntity.start.isNotNull()
 						,qCommutingEntity.end.isNull()
-						,qCommutingEntity.start.after(startOfDay)
-						,qCommutingEntity.start.before(startOfTomorrow)
+						,qCommutingEntity.start.goe(startOfDay)
+						,qCommutingEntity.start.loe(startOfTomorrow)
 						)
 				.execute();
 	}
@@ -58,8 +58,8 @@ public class CommutingRepoCustomImpl implements CommutingRepoCustom{
 				.where( qCommutingEntity.user.accountId.eq(accountId)
 						,qCommutingEntity.start.isNotNull()
 						,qCommutingEntity.end.isNull()
-						,qCommutingEntity.start.after(startOfDay)
-						,qCommutingEntity.start.before(startOfTomorrow)
+						,qCommutingEntity.start.goe(startOfDay)
+						,qCommutingEntity.start.loe(startOfTomorrow)
 						)
 				.execute();
 
@@ -75,8 +75,8 @@ public class CommutingRepoCustomImpl implements CommutingRepoCustom{
 			.from(qCommutingEntity)
 			.where(qCommutingEntity.user.accountId.eq(accountId)
 					,qCommutingEntity.start.isNotNull()
-					,qCommutingEntity.start.after(startOfDay)
-					,qCommutingEntity.start.before(startOfTomorrow))
+					,qCommutingEntity.start.goe(startOfDay)
+					,qCommutingEntity.start.loe(startOfTomorrow))
 			.fetchFirst();
 	}
 

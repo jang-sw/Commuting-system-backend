@@ -49,6 +49,7 @@ public class UserService {
 	}
 	
 	public String refreshToken(String authToken, String accountId, String sessionId) {
+	
 		try {
 			Clock clock = new DefaultClock() {
 	            @Override
@@ -59,7 +60,7 @@ public class UserService {
 	        Claims claims = Jwts.parser()
 	                .setSigningKey(Constant.SECRET_KEY)
 	                .setClock(clock)  
-	                .parseClaimsJws(authToken)
+	                .parseClaimsJws(authToken.substring(7))
 	                .getBody();
 
 			String id = claims.getSubject();

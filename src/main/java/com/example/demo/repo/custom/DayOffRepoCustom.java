@@ -12,5 +12,6 @@ public interface DayOffRepoCustom {
 
 	List<DayOffDto.DayOffData> findByUserWithPage(int page, Long accountId);
 	Long countByAccountId(Long accountId);
+	DayOffDto.DayOffData finfTodayByAccountId(Long accountId);
 	
 }

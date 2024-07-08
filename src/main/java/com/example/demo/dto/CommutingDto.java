@@ -29,6 +29,14 @@ public class CommutingDto {
 	
 	@Data
 	@AllArgsConstructor
+	public static class Today{ 
+		CommutingDto.TodayCommuting commuting;
+		DayOffDto.DayOffData dayOff;
+		
+	}
+	
+	@Data
+	@AllArgsConstructor
 	public static class History{
 		List<CommutingDto.CommutingData> hist;
 		long maxPage;
@@ -48,5 +56,6 @@ public class CommutingDto {
 	    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
 		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 		LocalDateTime end;
+		
 	}
 }

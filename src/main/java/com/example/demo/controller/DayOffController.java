@@ -40,6 +40,19 @@ public class DayOffController extends BaseController{
 		return ResponseEntity.ok(responseDto);
 	}
 	
+	@GetMapping("/api/dayOff/todayDayOff")
+	public ResponseEntity<ResponseDto> todayDayOff(HttpServletRequest httpServletRequest){
+		ResponseDto responseDto = new ResponseDto(1);
+		try {
+			DayOffDto.DayOffData data = dayOffService.getTodayDayOff(Long.parseLong(httpServletRequest.getHeader("accountId")));
+			responseDto.setData(data);
+		} catch (Exception e) {
+			responseDto.setResult(-1);
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(responseDto);
+	}
+	
 	@GetMapping("/adminApi/dayOff/history")
 	public ResponseEntity<ResponseDto> dayOffHistoryByUser(HttpServletRequest httpServletRequest, int page, Long accountId){
 		ResponseDto responseDto = new ResponseDto(1);

@@ -1,5 +1,6 @@
 package com.example.demo.repo.custom.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
@@ -47,6 +48,21 @@ public class DayOffRepoCustomImpl implements DayOffRepoCustom{
 			.from(qDayOffEntity)
 			.where(qDayOffEntity.user.accountId.eq(accountId))
 			.fetchFirst();
+	}
+
+	@Override
+	public DayOffDto.DayOffData finfTodayByAccountId(Long accountId) {
+		QDayOffEntity qDayOffEntity = QDayOffEntity.dayOffEntity;
+		LocalDate today = LocalDate.now();
+		
+		return jpaQueryFactory.select(
+				Projections.bean(DayOffDto.DayOffData.class, qDayOffEntity.dayOffId ,qDayOffEntity.category, qDayOffEntity.reason, qDayOffEntity.start, qDayOffEntity.end))
+				.from(qDayOffEntity)
+				.where(
+					qDayOffEntity.user.accountId.eq(accountId)
+					,qDayOffEntity.start.loe(today)
+					,qDayOffEntity.end.goe(today)
+				).fetchFirst();
 	}
 
 
