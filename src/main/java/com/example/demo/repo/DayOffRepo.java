@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.demo.entity.DayOffEntity;
+import com.example.demo.entity.UserEntity;
 import com.example.demo.repo.custom.DayOffRepoCustom;
 
 public interface DayOffRepo extends JpaRepository<DayOffEntity, Long>, DayOffRepoCustom{
@@ -59,4 +60,9 @@ public interface DayOffRepo extends JpaRepository<DayOffEntity, Long>, DayOffRep
 			+ "    day_ranges "
 			+ "WHERE account_id = :accountId", nativeQuery=true)
 	public Double findUsedByMonth(@Param("accountId")Long accountId);
+
+	
+	
+	
+	
 }

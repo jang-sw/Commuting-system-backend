@@ -22,7 +22,11 @@ public class UserDto {
 		String email;
 		String pwd;
 	}
-	
+	@Data
+	public static class ChangePwd{
+		String newPwd;
+		String currentPwd;
+	}
 	@Data
 	public static class ChkData{
 		String email;

@@ -41,11 +41,36 @@ public class CommutingDto {
 		List<CommutingDto.CommutingData> hist;
 		long maxPage;
 	}
-	
+	@Data
+	@AllArgsConstructor
+	public static class HistoryWithUser{
+		List<CommutingDto.CommutingDataWithUser> hist;
+		long maxPage;
+	}
 	@Data
 	public static class CommutingData{
 		Long commutingId;
 		
+		String state;
+		@JsonSerialize(using = LocalDateTimeSerializer.class)
+	    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+		LocalDateTime start;
+		
+		@JsonSerialize(using = LocalDateTimeSerializer.class)
+	    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+		LocalDateTime end;
+		
+	}
+	
+	@Data
+	public static class CommutingDataWithUser{
+		Long commutingId;
+		String name;
+		String position;
+		String team;
+		String email;
 		String state;
 		@JsonSerialize(using = LocalDateTimeSerializer.class)
 	    @JsonDeserialize(using = LocalDateTimeDeserializer.class)

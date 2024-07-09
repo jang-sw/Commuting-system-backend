@@ -48,7 +48,7 @@ public class UserController extends BaseController{
 	@PostMapping("/openApi/account/login")
 	public ResponseEntity<ResponseDto> login( UserDto.LoginRequest user, HttpServletRequest httpServletRequest){
 		ResponseDto responseDto = new ResponseDto();
-		UserEntity userEntity = userService.login(user);
+		UserDto.Response userEntity = userService.login(user);
 		String auth = userEntity != null ?
 				cryptoUtil.getToken(UUID.randomUUID() + "_" + userEntity.getAccountId() + "_" + userEntity.getAuth() + "_" + httpServletRequest.getRequestedSessionId()) : null;
 		
@@ -57,7 +57,7 @@ public class UserController extends BaseController{
 			return ResponseEntity.ok(responseDto);
 		}
 		responseDto.setResult(1);
-		responseDto.setData(new UserDto.Response(userEntity));
+		responseDto.setData(userEntity);
 		return ResponseEntity.ok().header("Authorization", auth).body(responseDto);
 	}
 	
@@ -72,6 +72,10 @@ public class UserController extends BaseController{
 		responseDto.setResult(1);
 		return ResponseEntity.ok().header("Authorization", newToken).body(responseDto);
 	}
-	
+	@PostMapping("/api/account/changePwd")
+	public ResponseEntity<ResponseDto> changePwd(HttpServletRequest httpServletRequest, UserDto.ChangePwd changePwd){
+		
+		return ResponseEntity.ok(new ResponseDto(userService.changePwd(Long.parseLong(httpServletRequest.getHeader("accountId")), changePwd)));
+	}
 	
 }

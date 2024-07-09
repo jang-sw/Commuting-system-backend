@@ -8,7 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.config.Constant;
 import com.example.demo.dto.DayOffDto;
+import com.example.demo.dto.DayOffDto.DayOffData;
 import com.example.demo.entity.QDayOffEntity;
+import com.example.demo.entity.UserEntity;
 import com.example.demo.repo.custom.DayOffRepoCustom;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -63,6 +65,47 @@ public class DayOffRepoCustomImpl implements DayOffRepoCustom{
 					,qDayOffEntity.start.loe(today)
 					,qDayOffEntity.end.goe(today)
 				).fetchFirst();
+	}
+
+	@Override
+	public Long deleteByDayOffIdAndUser(Long dayOffId, Long accountId) {
+		// TODO Auto-generated method stub
+		QDayOffEntity qDayOffEntity = QDayOffEntity.dayOffEntity;
+		return jpaQueryFactory.delete(qDayOffEntity)
+			.where(qDayOffEntity.dayOffId.eq(dayOffId), qDayOffEntity.user.accountId.eq(accountId))
+			.execute();
+	}
+
+	@Override
+	public Long countByAccountIdIn(List<Long> accountIds) {
+		QDayOffEntity qDayOffEntity = QDayOffEntity.dayOffEntity;
+
+		return jpaQueryFactory.select(qDayOffEntity.count())
+			.from(qDayOffEntity)
+			.where(qDayOffEntity.user.accountId.in(accountIds))
+			.fetchFirst();
+	}
+
+	@Override
+	public List<DayOffDto.DayOffDataWithUser> findByUserWithPageIn(int page, List<Long> accountIds) {
+		QDayOffEntity qDayOffEntity = QDayOffEntity.dayOffEntity;
+		OrderSpecifier<?> orderSpecifier = new OrderSpecifier<>(Order.DESC, qDayOffEntity.dayOffId);
+
+		PageRequest pageRequest = PageRequest.of(page, Constant.HISTORY_PAGE_SIZE);
+		
+		return jpaQueryFactory.select(
+					Projections.bean(
+							DayOffDto.DayOffDataWithUser.class, 
+							qDayOffEntity.dayOffId ,qDayOffEntity.category, qDayOffEntity.reason, qDayOffEntity.start, qDayOffEntity.end, qDayOffEntity.user.team, qDayOffEntity.user.name
+							
+						))
+				.from(qDayOffEntity)
+				.where(qDayOffEntity.user.accountId.in(accountIds))
+		        .offset(pageRequest.getOffset())
+		        .limit(pageRequest.getPageSize())
+		        .orderBy(orderSpecifier)
+		        .fetch();
+		
 	}
 
 

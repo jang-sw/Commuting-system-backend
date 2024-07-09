@@ -87,6 +87,8 @@ public class UserEntity {
 		this.position = user.getPosition();
 		this.rank = user.getRank();
 	}
-	
+	public UserEntity(Long accountId) {
+		this.accountId = accountId;
+	}
 	
 }

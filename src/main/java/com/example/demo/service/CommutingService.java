@@ -38,13 +38,19 @@ public class CommutingService {
 		return commutingRepo.findTodayCommuting(Long.parseLong(accountId));
 	}
 	public List<CommutingDto.CommutingData> getCommutingHistory(int page, Long accountId) throws Exception{
-		
-		
 		return commutingRepo.findByUserWithPage(page, accountId);
 	}
 	public Long getHistorySize(Long accountId) throws Exception{
 		return commutingRepo.countByAccountId(accountId);
 	}
+	
+	public List<CommutingDto.CommutingDataWithUser> getCommutingHistoryIn(int page, List<Long> accountIds) throws Exception{
+		return commutingRepo.findByUserWithPageIn(page, accountIds);
+	}
+	public Long getHistorySizeIn(List<Long> accountIds) throws Exception{
+		return commutingRepo.countByAccountIdIn(accountIds);
+	}
+	
 	@Transactional
 	public int clockOut(String accountId) {
 		try {

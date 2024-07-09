@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.config.Constant;
 import com.example.demo.dto.UserDto;
+import com.example.demo.dto.UserDto.Response;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repo.UserRepo;
 import com.example.demo.util.CryptoUtil;
@@ -44,7 +45,7 @@ public class UserService {
 		}
 	}
 	
-	public UserEntity login(UserDto.LoginRequest user) {
+	public UserDto.Response login(UserDto.LoginRequest user) {
 		return userRepo.findByEmailAndPwdAndDelYn(user.getEmail(), cryptoUtil.encodeSHA512(user.getPwd()), "N");
 	}
 	
@@ -96,5 +97,17 @@ public class UserService {
 		}
 		
 	}
-	
+	public int changePwd(Long accountId, UserDto.ChangePwd changePwd) {
+		try {
+			UserDto.Response user = userRepo.findByAccountIdAndPwdAndDelYn(accountId, cryptoUtil.encodeSHA512(changePwd.getCurrentPwd()), "N");
+			if(user == null) {
+				return -2;
+			}
+			return userRepo.updatePwd(accountId, cryptoUtil.encodeSHA512(changePwd.getNewPwd())) > 0 ? 1 : -1;
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
 }

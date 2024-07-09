@@ -105,7 +105,33 @@ public class CommutingRepoCustomImpl implements CommutingRepoCustom{
 			.where(qCommutingEntity.user.accountId.eq(accountId))
 			.fetchFirst();
 	}
-	
+	@Override
+	public List<CommutingDto.CommutingDataWithUser> findByUserWithPageIn(int page, List<Long> accountIds) {
+		QCommutingEntity qCommutingEntity = QCommutingEntity.commutingEntity;
+		OrderSpecifier<?> orderSpecifier = new OrderSpecifier<>(Order.DESC, qCommutingEntity.commutingId);
+
+		PageRequest pageRequest = PageRequest.of(page, Constant.HISTORY_PAGE_SIZE);
+		
+		return jpaQueryFactory.select(Projections.bean(
+					CommutingDto.CommutingDataWithUser.class, 
+					qCommutingEntity.commutingId ,qCommutingEntity.state, qCommutingEntity.start, qCommutingEntity.end, qCommutingEntity.user.name, qCommutingEntity.user.team, qCommutingEntity.user.position,qCommutingEntity.user.email 
+				))
+				.from(qCommutingEntity)
+				.where(qCommutingEntity.user.accountId.in(accountIds))
+		        .offset(pageRequest.getOffset())
+		        .limit(pageRequest.getPageSize())
+		        .orderBy(orderSpecifier)
+		        .fetch();
+	}
+
+	@Override
+	public Long countByAccountIdIn(List<Long> accountIds) {
+		QCommutingEntity qCommutingEntity = QCommutingEntity.commutingEntity;
+		return jpaQueryFactory.select(qCommutingEntity.count())
+			.from(qCommutingEntity)
+			.where(qCommutingEntity.user.accountId.in(accountIds))
+			.fetchFirst();
+	}
 	
 
 }

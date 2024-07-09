@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.dto.UserDto;
+import com.example.demo.dto.UserDto.Response;
 import com.example.demo.dto.UserDto.TodayCommute;
 import com.example.demo.entity.QCommutingEntity;
 import com.example.demo.entity.QDayOffEntity;
@@ -16,6 +17,7 @@ import com.example.demo.repo.custom.UserRepoCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -79,6 +81,43 @@ public class UserRepoCustomImpl implements UserRepoCustom{
 			.from(qUserEntity)
 			.where(qUserEntity.accountId.eq(accountId), qUserEntity.delYn.eq("N"))
 			.fetchFirst();
+	}
+
+	@Override
+	public Response findByEmailAndPwdAndDelYn(String email, String pwd, String delYn) {
+		QUserEntity qUserEntity = QUserEntity.userEntity;
+		
+		return jpaQueryFactory.select(
+				Projections.bean(UserDto.Response.class
+					, qUserEntity.accountId, qUserEntity.email, qUserEntity.auth, qUserEntity.name, qUserEntity.team, qUserEntity.position, qUserEntity.rank
+				))
+			.from(qUserEntity)
+			.where(qUserEntity.email.eq(email), qUserEntity.pwd.eq(pwd) ,qUserEntity.delYn.eq("N"))
+			.fetchFirst();
+	}
+
+	@Override
+	public Response findByAccountIdAndPwdAndDelYn(Long accountId, String pwd, String delYn) {
+		QUserEntity qUserEntity = QUserEntity.userEntity;
+		
+		return jpaQueryFactory.select(
+				Projections.bean(UserDto.Response.class
+					, qUserEntity.accountId, qUserEntity.email, qUserEntity.auth, qUserEntity.name, qUserEntity.team, qUserEntity.position, qUserEntity.rank
+				))
+			.from(qUserEntity)
+			.where(qUserEntity.accountId.eq(accountId), qUserEntity.pwd.eq(pwd) ,qUserEntity.delYn.eq("N"))
+			.fetchFirst();
+	}
+
+	@Override
+	@Transactional
+	public long updatePwd(Long accountId, String pwd) {
+		QUserEntity qUserEntity = QUserEntity.userEntity;
+		
+		return jpaQueryFactory.update(qUserEntity)
+			.set(qUserEntity.pwd, pwd)
+			.where(qUserEntity.accountId.eq(accountId), qUserEntity.delYn.eq("N"))
+			.execute();
 	}
 	
 	

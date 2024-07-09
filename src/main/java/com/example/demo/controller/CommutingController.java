@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import com.example.demo.config.Constant;
 import com.example.demo.dto.CommutingDto;
 import com.example.demo.dto.DayOffDto;
 import com.example.demo.dto.ResponseDto;
+import com.example.demo.dto.UserDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -59,12 +61,14 @@ public class CommutingController extends BaseController{
 	}
 	
 	@GetMapping("/adminApi/commute/history")
-	public ResponseEntity<ResponseDto> historyByUser(HttpServletRequest httpServletRequest, int page, Long accountId){
+	public ResponseEntity<ResponseDto> historyByUser(HttpServletRequest httpServletRequest, int page, String name){
 		ResponseDto responseDto = new ResponseDto(1);
 		try {
-			List<CommutingDto.CommutingData> hist = commutingService.getCommutingHistory(page - 1, accountId);
-			Long maxPage = commonUtil.getMaxPage(commutingService.getHistorySize(accountId), Constant.HISTORY_PAGE_SIZE);
-			responseDto.setData(new CommutingDto.History(hist, maxPage));
+			List<Long> accountIds = userService.getUserList(name)
+			.stream().map(UserDto.Response::getAccountId).collect(Collectors.toList());
+			List<CommutingDto.CommutingDataWithUser> hist = commutingService.getCommutingHistoryIn(page - 1, accountIds);
+			Long maxPage = commonUtil.getMaxPage(commutingService.getHistorySizeIn(accountIds), Constant.HISTORY_PAGE_SIZE);
+			responseDto.setData(new CommutingDto.HistoryWithUser(hist, maxPage));
 		} catch (Exception e) {
 			responseDto.setResult(-1);
 			e.printStackTrace();
