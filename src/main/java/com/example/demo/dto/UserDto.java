@@ -1,7 +1,10 @@
 package com.example.demo.dto;
 
+import java.util.List;
+
 import com.example.demo.entity.UserEntity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +13,6 @@ public class UserDto {
 	@Data
 	public static class CreateRequest{
 		String email;
-		String pwd;
 		String name;
 		String team;
 		String position;
@@ -33,7 +35,14 @@ public class UserDto {
 		String auth;
 		String name;
 	}
-	
+	@Data
+	public static class UpdateUser{
+		Long accountId;
+		String name;
+		String team;
+		String position;
+		String email;
+	}
 	@Data
 	@NoArgsConstructor
 	public static class Response{
@@ -54,6 +63,13 @@ public class UserDto {
 			this.position = userEntity.getPosition();
 			this.rank = userEntity.getRank();
 		}
+	}
+	
+	@Data
+	@AllArgsConstructor
+	public static class UserList{
+		List<UserDto.Response> list;
+		Long maxPage;
 	}
 	
 	@Data

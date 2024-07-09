@@ -79,9 +79,9 @@ public class UserEntity {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user") 
 	List<CommutingEntity> commutingList;
 	
-	public UserEntity(UserDto.CreateRequest user) {
+	public UserEntity(UserDto.CreateRequest user, String pwd) {
 		this.email = user.getEmail();
-		this.pwd = user.getPwd();
+		this.pwd = pwd;
 		this.name = user.getName();
 		this.team = user.getTeam();
 		this.position = user.getPosition();

@@ -19,6 +19,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Clock;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.DefaultClock;
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -29,8 +30,7 @@ public class UserService {
 	
 	public int createUser(UserDto.CreateRequest user) {
 		try {
-			user.setPwd(cryptoUtil.encodeSHA512(user.getPwd()));
-			this.userRepo.save(new UserEntity(user));
+			this.userRepo.save(new UserEntity(user, cryptoUtil.encodeSHA512("1234")));
 			return 1;
 		} catch(DataIntegrityViolationException dive) {
 			 if(dive.getMessage().contains("Duplicate entry")) {
@@ -46,6 +46,7 @@ public class UserService {
 	}
 	
 	public UserDto.Response login(UserDto.LoginRequest user) {
+		System.out.println(cryptoUtil.encodeSHA512(user.getPwd()));
 		return userRepo.findByEmailAndPwdAndDelYn(user.getEmail(), cryptoUtil.encodeSHA512(user.getPwd()), "N");
 	}
 	
@@ -82,8 +83,14 @@ public class UserService {
 	public List<UserDto.TodayCommute> getTodayCommutingByName(String name) throws Exception{
 		return userRepo.findTodayCommuting(name);
 	}
+	public List<UserDto.Response> getUserListWithPage(int page, String name) throws Exception{
+		return userRepo.findContainsName(name);
+	}
 	public List<UserDto.Response> getUserList(String name) throws Exception{
 		return userRepo.findContainsName(name);
+	}
+	public Long getUserCnt(String name) throws Exception{
+		return userRepo.countContainsName(name);
 	}
 	public UserDto.Response getUser(Long accountId){
 		return userRepo.findUserById(accountId);
@@ -105,6 +112,36 @@ public class UserService {
 			}
 			return userRepo.updatePwd(accountId, cryptoUtil.encodeSHA512(changePwd.getNewPwd())) > 0 ? 1 : -1;
 			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	@Transactional
+	public int resetPwd(Long accountId) {
+		try {
+			return userRepo.updatePwd(accountId, cryptoUtil.encodeSHA512("1234")) > 0 ? 1 : -1;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	
+	public int updateUser(UserDto.UpdateUser user) {
+		try {
+			return userRepo.updateUser(user) > 0 ? 1 : -1;
+		}catch(Exception e) {
+			if(e.getMessage().contains("Duplicate entry")) {
+				return -2;
+			}
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	@Transactional
+	public int deleteUser(Long accountId) {
+		try {
+			return userRepo.deleteUser(accountId) > 0 ? 1 : -1;
 		}catch(Exception e) {
 			e.printStackTrace();
 			return -1;

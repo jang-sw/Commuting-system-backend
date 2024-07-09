@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.config.Constant;
 import com.example.demo.dto.ResponseDto;
 import com.example.demo.dto.UserDto;
 import com.example.demo.entity.UserEntity;
@@ -19,10 +20,11 @@ public class UserController extends BaseController{
  
 	
 	@GetMapping("/adminApi/account/byName")
-	public ResponseEntity<ResponseDto> byName(HttpServletRequest httpServletRequest, String name){
+	public ResponseEntity<ResponseDto> byName(HttpServletRequest httpServletRequest, String name, int page){
 		ResponseDto responseDto = new ResponseDto(1);
 		try { 
-			responseDto.setData(userService.getUserList(name));
+			responseDto.setData(new UserDto.UserList(userService.getUserListWithPage(page - 1,name), commonUtil.getMaxPage(userService.getUserCnt(name), Constant.HISTORY_PAGE_SIZE)));
+			
 		} catch (Exception e) {
 			responseDto.setResult(-1);
 			e.printStackTrace();
@@ -74,8 +76,18 @@ public class UserController extends BaseController{
 	}
 	@PostMapping("/api/account/changePwd")
 	public ResponseEntity<ResponseDto> changePwd(HttpServletRequest httpServletRequest, UserDto.ChangePwd changePwd){
-		
 		return ResponseEntity.ok(new ResponseDto(userService.changePwd(Long.parseLong(httpServletRequest.getHeader("accountId")), changePwd)));
 	}
-	
+	@PostMapping("/adminApi/account/resetPwd")
+	public ResponseEntity<ResponseDto> resetPwd(HttpServletRequest httpServletRequest, Long accountId){
+		return ResponseEntity.ok(new ResponseDto(userService.resetPwd(accountId)));
+	}
+	@PostMapping("/adminApi/account/update")
+	public ResponseEntity<ResponseDto> updateUser(HttpServletRequest httpServletRequest, UserDto.UpdateUser user){
+		return ResponseEntity.ok(new ResponseDto(userService.updateUser(user)));
+	}
+	@PostMapping("/adminApi/account/delete")
+	public ResponseEntity<ResponseDto> deleteUser(HttpServletRequest httpServletRequest, Long accountId){
+		return ResponseEntity.ok(new ResponseDto(userService.deleteUser(accountId)));
+	}
 }
