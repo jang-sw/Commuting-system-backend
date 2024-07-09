@@ -6,11 +6,3 @@ spring boot + jpa + querydsl
 Attendance Management System Backend
 
 出退勤管理システムのバックエンド
-
-<hr>
-
-개발중
-
-In the process of developing
-
-開発中
