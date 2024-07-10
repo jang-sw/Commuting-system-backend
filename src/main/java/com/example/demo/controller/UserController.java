@@ -42,7 +42,7 @@ public class UserController extends BaseController{
 		}
 		return ResponseEntity.ok(responseDto);
 	}
-	@PostMapping("/openApi/account/create")
+	@PostMapping("/adminApi/account/create")
 	public ResponseEntity<ResponseDto> createUser( UserDto.CreateRequest user){
 		return ResponseEntity.ok(new ResponseDto(userService.createUser(user)));
 	}
