@@ -19,6 +19,11 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestController
 public class CommutingController extends BaseController{
 	
+	/**
+	 * 오늘 나의 근무 정보 불러오기
+	 *  <pre> /api/commute/today </pre>
+	 * @param 
+	 * */
 	@GetMapping("/api/commute/today")
 	public ResponseEntity<ResponseDto> today(HttpServletRequest httpServletRequest){
 		ResponseDto responseDto = new ResponseDto(1);
@@ -34,6 +39,11 @@ public class CommutingController extends BaseController{
 		return ResponseEntity.ok(responseDto);
 	}
 	
+	/**
+	 * 이름으로 근무 정보 검색하기
+	 *  <pre> /api/commute/todayByName </pre>
+	 * @param 
+	 * */
 	@GetMapping("/api/commute/todayByName")
 	public ResponseEntity<ResponseDto> todayByName(HttpServletRequest httpServletRequest, String name){
 		ResponseDto responseDto = new ResponseDto(1);
@@ -46,6 +56,11 @@ public class CommutingController extends BaseController{
 		return ResponseEntity.ok(responseDto);
 	}
 	
+	/**
+	 * 근무 기록 검색하기
+	 * <pre> /api/commute/history </pre>
+	 * @param 
+	 * */
 	@GetMapping("/api/commute/history")
 	public ResponseEntity<ResponseDto> history(HttpServletRequest httpServletRequest, int page){
 		ResponseDto responseDto = new ResponseDto(1);
@@ -60,6 +75,11 @@ public class CommutingController extends BaseController{
 		return ResponseEntity.ok(responseDto);
 	}
 	
+	/**
+	 * 관리자 기능 : 이름으로 근무 기록 검색하기
+	 * <pre> /adminApi/commute/history </pre>
+	 * @param 
+	 * */
 	@GetMapping("/adminApi/commute/history")
 	public ResponseEntity<ResponseDto> historyByUser(HttpServletRequest httpServletRequest, int page, String name){
 		ResponseDto responseDto = new ResponseDto(1);
@@ -76,21 +96,41 @@ public class CommutingController extends BaseController{
 		return ResponseEntity.ok(responseDto);
 	}
 	
+	/**
+	 * 근무 상태 변경 (근무중)
+	 * <pre> /api/commute/clockIn </pre>
+	 * @param 
+	 * */
 	@PostMapping("/api/commute/clockIn")
 	public ResponseEntity<ResponseDto> clockIn(HttpServletRequest httpServletRequest){
 		return ResponseEntity.ok(new ResponseDto(commutingService.clockIn(httpServletRequest.getHeader("accountId"))));
 	}
 	
+	/**
+	 * 근무 상태 변경 (퇴근)
+	 * <pre> /api/commute/clockOut </pre>
+	 * @param 
+	 * */
 	@PostMapping("/api/commute/clockOut")
 	public ResponseEntity<ResponseDto> clockOut(HttpServletRequest httpServletRequest){
 		return ResponseEntity.ok(new ResponseDto(commutingService.clockOut(httpServletRequest.getHeader("accountId"))));
 	}
 	
+	/**
+	 * 근무 상태 변경 (외출)
+	 * <pre> /api/commute/outing </pre>
+	 * @param 
+	 * */
 	@PostMapping("/api/commute/outing")
 	public ResponseEntity<ResponseDto> outing(HttpServletRequest httpServletRequest){
 		return ResponseEntity.ok(new ResponseDto(commutingService.updateState(httpServletRequest.getHeader("accountId"), "OUTING")));
 	}
 	
+	/**
+	 * 근무 상태 변경 (외출 복귀)
+	 * <pre> /api/commute/restart </pre>
+	 * @param 
+	 * */
 	@PostMapping("/api/commute/restart")
 	public ResponseEntity<ResponseDto> restart(HttpServletRequest httpServletRequest){
 		return ResponseEntity.ok(new ResponseDto(commutingService.updateState(httpServletRequest.getHeader("accountId"), "START")));

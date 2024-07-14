@@ -19,6 +19,12 @@ public class DayOffService {
 	@Autowired DayOffRepo dayOffRepo;
 	@Autowired CommonUtil commonUtil;
 	
+	/**
+	 * 휴가 생성
+	 * 
+	 * @param
+	 * @return 1(성공), -1(실패)
+	 * */
 	public int createDayOff(DayOffEntity dayOffEntity) {
 		try {
 			dayOffRepo.save(dayOffEntity);
@@ -28,6 +34,13 @@ public class DayOffService {
 			return -1;
 		}
 	}
+	
+	/**
+	 * 휴가 취소
+	 * 
+	 * @param
+	 * @return 1(성공), -1(실패)
+	 * */
 	@Transactional
 	public int cancelDayOff(Long dayOffId, Long accountId) {
 		try {
@@ -38,12 +51,24 @@ public class DayOffService {
 		}
 	}
 	
+	/**
+	 * 오늘 휴가일정 불러오기
+	 * 
+	 * @param
+	 * @return 휴가 정보
+	 * */
 	public DayOffDto.DayOffData getTodayDayOff(Long accountId) throws Exception{
 		
 		return dayOffRepo.finfTodayByAccountId(accountId);
 		
 	}
 	
+	/**
+	 * 휴가 기록 불러오기
+	 * 
+	 * @param
+	 * @return 연중 사용일, 월중 사용일, 사용 기록, 사용 기록 최대 page
+	 * */
 	public DayOffDto.DayOffHistory getHistData(Long accountId, int page) throws Exception{
 		DayOffDto.DayOffHistory dayOffHistory 
 			= new DayOffDto.DayOffHistory(
@@ -55,6 +80,13 @@ public class DayOffService {
 		
 		return dayOffHistory;
 	}
+	
+	/**
+	 * 사용자 목록으로 휴가 기록 불러오기
+	 * 
+	 * @param
+	 * @return 사용 기록, 사용 기록 최대 page
+	 * */
 	public DayOffDto.DayOffHistoryWithUser getHistDataAdmin(List<Long> accountIds, int page) throws Exception{
 		DayOffDto.DayOffHistoryWithUser dayOffHistory 
 			= new DayOffDto.DayOffHistoryWithUser(

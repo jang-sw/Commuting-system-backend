@@ -27,7 +27,12 @@ public class UserService {
 	@Autowired UserRepo userRepo;
 	@Autowired CryptoUtil cryptoUtil;
 
-	
+	/**
+	 * 사용자 생성
+	 * 
+	 * @param user (email, pwd, name, team, position, rank)
+	 * @return 1(성공), -1(에러), -2(키 중복)
+	 * */
 	public int createUser(UserDto.CreateRequest user) {
 		try {
 			this.userRepo.save(new UserEntity(user, cryptoUtil.encodeSHA512("1234")));
@@ -45,11 +50,22 @@ public class UserService {
 		}
 	}
 	
+	/**
+	 * 사용자 생성
+	 * 
+	 * @param user (email, pwd)
+	 * @return user (accountId, email, auth, name, team, position, rank)
+	 * */
 	public UserDto.Response login(UserDto.LoginRequest user) {
-		System.out.println(cryptoUtil.encodeSHA512(user.getPwd()));
 		return userRepo.findByEmailAndPwdAndDelYn(user.getEmail(), cryptoUtil.encodeSHA512(user.getPwd()), "N");
 	}
 	
+	/**
+	 * 토큰 재생성
+	 * 
+	 * @param 
+	 * @return 새로운 토큰
+	 * */
 	public String refreshToken(String authToken, String accountId, String sessionId) {
 	
 		try {
@@ -80,21 +96,62 @@ public class UserService {
 		return null;
 	}
 	
+	/**
+	 * 이름으로 오늘 근무중인 인원 유저데이터 불러오기
+	 * 
+	 * @param 
+	 * @return 유저 리스트
+	 * */
 	public List<UserDto.TodayCommute> getTodayCommutingByName(String name) throws Exception{
 		return userRepo.findTodayCommuting(name);
 	}
+	
+	/**
+	 * 이름으로 유저 리스트 불러오기(페이징)
+	 * 
+	 * @param 
+	 * @return 유저 리스트
+	 * */
 	public List<UserDto.Response> getUserListWithPage(int page, String name) throws Exception{
-		return userRepo.findContainsName(name);
+		return userRepo.findContainsNameWithPage(page, name);
 	}
+	
+	/**
+	 * 토큰 재생성
+	 * 
+	 * @param 
+	 * @return 새로운 토큰
+	 * */
 	public List<UserDto.Response> getUserList(String name) throws Exception{
 		return userRepo.findContainsName(name);
 	}
+	
+	/**
+	 * 이름으로 유저 갯수 불러오기
+	 * 
+	 * @param 
+	 * @return count
+	 * */
 	public Long getUserCnt(String name) throws Exception{
 		return userRepo.countContainsName(name);
 	}
+	
+	/**
+	 * 유저 불러오기
+	 * 
+	 * @param 
+	 * @return 유저
+	 * */
 	public UserDto.Response getUser(Long accountId){
 		return userRepo.findUserById(accountId);
 	}
+	
+	/**
+	 * 유저 데이터 일치 확인
+	 * 
+	 * @param 
+	 * @return 1(성공), -1(실패)
+	 * */
 	public int chKUserData(Long accountId, String email, String auth, String name) {
 		try {
 			return userRepo.countByAccountIdAndEmailAndAuthAndNameAndDelYn(accountId, email, auth, name, "N") > 0 ? 1 : -1;
@@ -104,6 +161,13 @@ public class UserService {
 		}
 		
 	}
+	
+	/**
+	 * 비밀번호 변경
+	 * 
+	 * @param 
+	 * @return 1(성공), -1(에러), -2(없는 유저)
+	 * */
 	public int changePwd(Long accountId, UserDto.ChangePwd changePwd) {
 		try {
 			UserDto.Response user = userRepo.findByAccountIdAndPwdAndDelYn(accountId, cryptoUtil.encodeSHA512(changePwd.getCurrentPwd()), "N");
@@ -117,6 +181,13 @@ public class UserService {
 			return -1;
 		}
 	}
+	
+	/**
+	 * 비밀번호 초가화(1234)
+	 * 
+	 * @param 
+	 * @return 1(성공), -1(실패)
+	 * */
 	@Transactional
 	public int resetPwd(Long accountId) {
 		try {
@@ -127,6 +198,12 @@ public class UserService {
 		}
 	}
 	
+	/**
+	 * 유저 업데이트
+	 * 
+	 * @param user(accountId, name, team, position, email)
+	 * @return 1(성공), -1(에러), -2(중복키)
+	 * */
 	public int updateUser(UserDto.UpdateUser user) {
 		try {
 			return userRepo.updateUser(user) > 0 ? 1 : -1;
@@ -138,6 +215,13 @@ public class UserService {
 			return -1;
 		}
 	}
+	
+	/**
+	 * 유저 삭제
+	 * 
+	 * @param 
+	 * @return 1(성공), -1(에러)
+	 * */
 	@Transactional
 	public int deleteUser(Long accountId) {
 		try {
